@@ -100,10 +100,6 @@ namespace Shopping.ShoppingEntity.Entity
                 .HasForeignKey(k => k.ShoppingCartId);
 
             modelBuilder.Entity<ShoppingCart>().ToTable("T_ShoppingCart");
-            modelBuilder.Entity<ShoppingCart>()
-                .HasOne(s => s.User)
-                .WithOne(u => u.ShoppingCart)
-                .HasForeignKey<ShoppingCart>(u => u.UserId);
 
             modelBuilder.Entity<User>().ToTable("T_User");
             modelBuilder.Entity<User>()
