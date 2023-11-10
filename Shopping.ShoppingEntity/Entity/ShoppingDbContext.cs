@@ -45,6 +45,32 @@ namespace Shopping.ShoppingEntity.Entity
             {
                 entity.Property(p => p.CategoryName).IsRequired().HasMaxLength(25);
             });
+            /*modelBuilder.Entity<Category>().HasData(
+                new Category() { Id = Guid.NewGuid() ,CategoryName = "男装"},
+                new Category() { Id = Guid.NewGuid(), CategoryName = "女装" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "童装" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "运动装备" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "生鲜食品" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "零食" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "饮料" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "调味品" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "家具" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "装饰品" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "厨房用具" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "手机" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "电脑" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "相机" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "家用电器" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "护肤品" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "彩妆" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "香水" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "玩具" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "学习用具" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "婴儿用品" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "小说" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "教育书籍" },
+                new Category() { Id = Guid.NewGuid(), CategoryName = "杂志" }
+            );*/
 
             modelBuilder.Entity<Order>().ToTable("T_Order")
                 .HasOne(o => o.User)
@@ -74,6 +100,10 @@ namespace Shopping.ShoppingEntity.Entity
                 .HasForeignKey(k => k.ShoppingCartId);
 
             modelBuilder.Entity<ShoppingCart>().ToTable("T_ShoppingCart");
+            modelBuilder.Entity<ShoppingCart>()
+                .HasOne(s => s.User)
+                .WithOne(u => u.ShoppingCart)
+                .HasForeignKey<ShoppingCart>(u => u.UserId);
 
             modelBuilder.Entity<User>().ToTable("T_User");
             modelBuilder.Entity<User>()

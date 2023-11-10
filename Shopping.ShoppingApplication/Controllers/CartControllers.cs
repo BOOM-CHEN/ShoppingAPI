@@ -52,6 +52,7 @@ namespace Shopping.ShoppingApplication.Controllers
                     Message = "未找到该产品,无法加入到购物车中"
                 };
             }
+            entity.Products.Add(product);
             await _cartService.AddCartAsync(entity);
             return new MessageModel<string>()
             {

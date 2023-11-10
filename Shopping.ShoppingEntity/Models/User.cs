@@ -20,5 +20,6 @@ namespace Shopping.ShoppingEntity.Models
         public string? UserAvatar { get; set; }
         public Password? Passwords { get; set; }
         public List<Order>? Orders { get; set; }
+        public ShoppingCart? ShoppingCart { get; set; }
     }
 }

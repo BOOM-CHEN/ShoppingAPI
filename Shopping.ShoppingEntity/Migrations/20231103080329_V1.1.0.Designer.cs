@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shopping.ShoppingEntity.Entity;
 
@@ -11,9 +12,11 @@ using Shopping.ShoppingEntity.Entity;
 namespace Shopping.ShoppingEntity.Migrations
 {
     [DbContext(typeof(ShoppingDbContext))]
-    partial class ShoppingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103080329_V1.1.0")]
+    partial class V110
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,124 +57,124 @@ namespace Shopping.ShoppingEntity.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("126cd0e7-f7b1-4ba1-83e0-09f42123a52a"),
+                            Id = new Guid("368caa20-b894-4972-9e30-22351a928a9a"),
                             CategoryName = "男装"
                         },
                         new
                         {
-                            Id = new Guid("9cd6fa2c-2b08-49e0-aaeb-ad824221fee6"),
+                            Id = new Guid("72309e08-8968-4909-92e4-8ddcd684ee1d"),
                             CategoryName = "女装"
                         },
                         new
                         {
-                            Id = new Guid("69395a90-aed0-4558-8f5e-9ded6c8525df"),
+                            Id = new Guid("9df6cc40-30a7-462f-98bf-999786c0bc69"),
                             CategoryName = "童装"
                         },
                         new
                         {
-                            Id = new Guid("697eb7d8-8741-4db3-bdb9-4f0755271df0"),
+                            Id = new Guid("5542c5d3-70d6-42cb-9d0c-a5db8590112d"),
                             CategoryName = "运动装备"
                         },
                         new
                         {
-                            Id = new Guid("d529dd05-2c95-4e4e-96d4-6eddbbca255e"),
+                            Id = new Guid("0386882a-9987-4eb5-abf2-fc730cf42fa8"),
                             CategoryName = "生鲜食品"
                         },
                         new
                         {
-                            Id = new Guid("e11f6345-ed1f-4e6b-8893-68ac7a3b471d"),
+                            Id = new Guid("e0b6d344-34d3-4e3b-ac7f-034a1cf11e83"),
                             CategoryName = "零食"
                         },
                         new
                         {
-                            Id = new Guid("41355301-33d1-44b3-a074-af89c5368884"),
+                            Id = new Guid("0cc084f2-3808-4835-9f11-f7f5870c7c56"),
                             CategoryName = "饮料"
                         },
                         new
                         {
-                            Id = new Guid("76742134-2bf7-48bf-84c5-42550b44e55e"),
+                            Id = new Guid("b6697a1f-7564-47a0-9665-3a0d0bf10f97"),
                             CategoryName = "调味品"
                         },
                         new
                         {
-                            Id = new Guid("c2de93e4-9d7b-4eab-88ce-bbdc34a1faa6"),
+                            Id = new Guid("877b2494-6ac3-4155-8b01-3775254eda49"),
                             CategoryName = "家具"
                         },
                         new
                         {
-                            Id = new Guid("22a53532-6e46-4aab-9fca-c45496cca106"),
+                            Id = new Guid("26d16ddc-2c77-4824-b1d0-527dc2416612"),
                             CategoryName = "装饰品"
                         },
                         new
                         {
-                            Id = new Guid("19ad6597-4346-49d3-b39a-f2dd44490309"),
+                            Id = new Guid("51202591-f568-4f43-a053-47cc29607ea0"),
                             CategoryName = "厨房用具"
                         },
                         new
                         {
-                            Id = new Guid("9d5b00f2-bfa9-4c4e-a731-5376e7870296"),
+                            Id = new Guid("59b32283-ba8d-455c-a6d4-92bfc5dcbe7c"),
                             CategoryName = "手机"
                         },
                         new
                         {
-                            Id = new Guid("db652bfd-5b31-4227-a336-d6f78fd34016"),
+                            Id = new Guid("57f6578b-ce7a-4093-a448-06b5374de0ae"),
                             CategoryName = "电脑"
                         },
                         new
                         {
-                            Id = new Guid("5c0e9aaa-b5f1-4bf8-a1bd-331c312f1698"),
+                            Id = new Guid("1ff8e0a5-a348-4229-8274-1e63ebe457e2"),
                             CategoryName = "相机"
                         },
                         new
                         {
-                            Id = new Guid("98d4cefb-797a-4f35-a1e3-e2184edb2c6d"),
+                            Id = new Guid("ea46f6ab-2331-40c8-ab16-4f35b5072c8a"),
                             CategoryName = "家用电器"
                         },
                         new
                         {
-                            Id = new Guid("d1de496c-75b9-494d-900f-acce5f707e86"),
+                            Id = new Guid("56c60d50-090f-46d0-abbf-ad823a4c7631"),
                             CategoryName = "护肤品"
                         },
                         new
                         {
-                            Id = new Guid("1dde4b92-10bf-4226-96fb-2f9716136a29"),
+                            Id = new Guid("82fb84de-e210-4b0d-83b5-54b8ed7fe41f"),
                             CategoryName = "彩妆"
                         },
                         new
                         {
-                            Id = new Guid("8a25e868-9d05-4970-b4f1-00e38bc98369"),
+                            Id = new Guid("b2fe8d00-3856-4730-81fc-625105265bbe"),
                             CategoryName = "香水"
                         },
                         new
                         {
-                            Id = new Guid("860466b0-dd43-4d0c-bab4-9aee1b36daf9"),
+                            Id = new Guid("df37cbbc-b42e-474d-ab8d-45dd51550194"),
                             CategoryName = "玩具"
                         },
                         new
                         {
-                            Id = new Guid("6784b5c5-847c-4089-bdba-d9f1956a34e2"),
+                            Id = new Guid("d0ee7d8f-4aa1-4e07-9981-2e547805ba0c"),
                             CategoryName = "学习用具"
                         },
                         new
                         {
-                            Id = new Guid("8caf3e4e-64d1-4a72-9122-09558eb3d2c7"),
+                            Id = new Guid("f6fd420c-0e61-4345-bceb-07bfb99be228"),
                             CategoryName = "婴儿用品"
                         },
                         new
                         {
-                            Id = new Guid("d0fcf605-5557-4bac-861c-55a8bd0ce22e"),
+                            Id = new Guid("36dd7faa-5072-4a16-af17-061f73ebb75e"),
                             CategoryName = "小说"
                         },
                         new
                         {
-                            Id = new Guid("18861699-ac27-44bd-aca9-a7eaaf53350c"),
+                            Id = new Guid("1838dafb-6842-43c6-8b80-4a42e488736e"),
                             CategoryName = "教育书籍"
                         },
                         new
                         {
-                            Id = new Guid("1e95fe11-87fc-43a1-b302-1174b86f4726"),
+                            Id = new Guid("2eb8d3f5-4f1a-4720-990f-54d0e3f30949"),
                             CategoryName = "杂志"
-                });
+                        });
                 });
 
             modelBuilder.Entity("Shopping.ShoppingEntity.Models.Order", b =>
@@ -237,7 +240,6 @@ namespace Shopping.ShoppingEntity.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ProductCategory")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductDate")
@@ -276,107 +278,6 @@ namespace Shopping.ShoppingEntity.Migrations
                     b.HasIndex("ShoppingCartId");
 
                     b.ToTable("T_Product", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("743d208b-256d-434c-9cd2-ee22f7acca1b"),
-                            ProductCategory = "小说",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "江南小说",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 925,
-                            ProductName = "龙族1",
-                            ProductPrice = 99.0
-                        },
-                        new
-                        {
-                            Id = new Guid("83b32c80-6e60-49f9-9b39-8c9bb724fa34"),
-                            ProductCategory = "小说",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "江南小说",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 854,
-                            ProductName = "龙族2",
-                            ProductPrice = 109.0
-                        },
-                        new
-                        {
-                            Id = new Guid("550f3849-7422-48f2-a3ea-aec8b7234940"),
-                            ProductCategory = "小说",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "江南小说",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 658,
-                            ProductName = "龙族3",
-                            ProductPrice = 125.0
-                        },
-                        new
-                        {
-                            Id = new Guid("4a4659ce-f4b5-4d01-bad6-debe4d9bbfc3"),
-                            ProductCategory = "小说",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "江南小说",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 356,
-                            ProductName = "龙族4",
-                            ProductPrice = 169.0
-                        },
-                        new
-                        {
-                            Id = new Guid("d09a3a5d-89d9-4391-9890-4eec73c97d38"),
-                            ProductCategory = "小说",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "江南小说",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 500,
-                            ProductName = "龙族5",
-                            ProductPrice = 135.0
-                        },
-                        new
-                        {
-                            Id = new Guid("973ea450-593c-4749-b906-25e13177917b"),
-                            ProductCategory = "手机",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "小米手机",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 925,
-                            ProductName = "小米1",
-                            ProductPrice = 250.0
-                        },
-                        new
-                        {
-                            Id = new Guid("7436c423-ebae-42f9-b54f-a862a6a6e17f"),
-                            ProductCategory = "手机",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "小米手机",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 655,
-                            ProductName = "小米2",
-                            ProductPrice = 165.0
-                        },
-                        new
-                        {
-                            Id = new Guid("dcf136c7-1e09-412a-a642-180211ecf29d"),
-                            ProductCategory = "电脑",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "联想系列",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 300,
-                            ProductName = "联想7000p",
-                            ProductPrice = 9555.0
-                        },
-                        new
-                        {
-                            Id = new Guid("334c9cf1-79e1-4382-b6fd-f20b38edb9cb"),
-                            ProductCategory = "电脑",
-                            ProductDate = "2023-11-09 19:58:19",
-                            ProductDescription = "联想系列",
-                            ProductDiscount = 0.0,
-                            ProductInventory = 255,
-                            ProductName = "联想y7000p",
-                            ProductPrice = 8555.0
-                        });
                 });
 
             modelBuilder.Entity("Shopping.ShoppingEntity.Models.ProductCategory", b =>
@@ -400,10 +301,7 @@ namespace Shopping.ShoppingEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("ProductQuantity")
+                    b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
@@ -483,11 +381,9 @@ namespace Shopping.ShoppingEntity.Migrations
 
             modelBuilder.Entity("Shopping.ShoppingEntity.Models.Product", b =>
                 {
-                    b.HasOne("Shopping.ShoppingEntity.Models.ShoppingCart", "ShoppingCart")
+                    b.HasOne("Shopping.ShoppingEntity.Models.ShoppingCart", null)
                         .WithMany("Products")
                         .HasForeignKey("ShoppingCartId");
-
-                    b.Navigation("ShoppingCart");
                 });
 
             modelBuilder.Entity("Shopping.ShoppingEntity.Models.ProductCategory", b =>
