@@ -10,8 +10,8 @@ namespace Shopping.ShoppingAPI.Utils.SwaggerExt
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(opt =>
             {
-                var file = Path.Combine(AppContext.BaseDirectory, "Movie.MovieApi.xml");
-                //opt.IncludeXmlComments(file, true);//显示注释
+                var file = Path.Combine(AppContext.BaseDirectory, "Shopping.ShoppingAPI.xml");
+                opt.IncludeXmlComments(file, true);//显示注释
                 opt.OrderActionsBy(o => o.HttpMethod);//排序
                 opt.SchemaFilter<DefaultValueSchemaFilter>();
             });

@@ -24,6 +24,14 @@ namespace Shopping.ShoppingAPI
                 opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH-mm-ss";//时间格式
             });
 
+            #region Redis
+            builder.Services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = builder.Configuration.GetConnectionString("Redis");
+                opt.InstanceName = "RedisInstance";
+            });
+            #endregion
+
             #region AutoMapper
             builder.Services.AddAutoMapperServices();
             #endregion
@@ -97,7 +105,7 @@ namespace Shopping.ShoppingAPI
             app.UseAuthorization();
 
 
-
+            app.UseResponseCaching();
             app.MapControllers();
             app.MapDefaultControllerRoute();
 

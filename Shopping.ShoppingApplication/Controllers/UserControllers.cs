@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using Shopping.ShoppingApplication.IServices;
 using Shopping.ShoppingApplication.Services;
 using Shopping.ShoppingApplication.Utils.Email;
@@ -16,15 +18,23 @@ namespace Shopping.ShoppingAPI.Controllers
     [ApiController]
     public class UserControllers : ControllerBase
     {
+        private readonly IDistributedCache _distributedCache;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserControllers(IUserService userService, IMapper mapper)
+        public UserControllers(IUserService userService, IMapper mapper,IDistributedCache distributedCache)
         {
             _userService = userService;
             _mapper = mapper;
+            _distributedCache = distributedCache;
         }
 
         #region Get
+        /// <summary>
+        /// 获取所有用户分页,root
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <returns></returns>
         [Authorize(Roles = ("root"))]
         [HttpGet("GetLimitUser")]
         public async Task<MessageModel<List<UserInfoDto>>> GetLimiteUser(int skip, int take)
@@ -435,23 +445,36 @@ namespace Shopping.ShoppingAPI.Controllers
                     Success = false
                 };
             }
+            
             var password = await _userService.FindPasswordAsync(e => e.UserId == entity.Id);
             if (userLoginDto.UserPassword == PasswordAES.Decrypt(Convert.FromBase64String(entity.UserPassword)
                 , Convert.FromBase64String(password.PublicKey)
                 , Convert.FromBase64String(password.IV)))
             {
-                //token过期
-                if (!JwtHelper.ValidateToken(entity.Token))
+                //先从redis中获取token
+                var RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail);
+                await Console.Out.WriteLineAsync(RedisValueJson);
+                //判断是否存在token
+                if (string.IsNullOrEmpty(RedisValueJson))
                 {
-                    entity.Token = JwtHelper.CreateJwt(entity.Role, entity.UserName, entity.UserEmail);
-                    await _userService.UpdateUserAsync(entity);
+                    //不存在则重新生成一份token,并生成一份缓存
+                    //token过期
+                    if (!JwtHelper.ValidateToken(entity.Token))
+                    {
+                        entity.Token = JwtHelper.CreateJwt(entity.Role, entity.UserName, entity.UserEmail);
+                        await _userService.UpdateUserAsync(entity);
+                    }
+                    Random random = new Random();
+                    await _distributedCache.SetStringAsync(userLoginDto.UserEmail, entity.Token
+                        ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(random.NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
+                    RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail);
                 }
                 return new MessageModel<string>
                 {
                     Status = 200,
                     Success = true,
                     Message = "登录成功",
-                    Data = entity.Token
+                    Data = RedisValueJson
                 };
             }
             else
