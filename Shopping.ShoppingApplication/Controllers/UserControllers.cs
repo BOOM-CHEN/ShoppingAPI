@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog;
 using Shopping.ShoppingApplication.IServices;
-using Shopping.ShoppingApplication.Services;
 using Shopping.ShoppingApplication.Utils.Email;
 using Shopping.ShoppingApplication.Utils.JWT;
 using Shopping.ShoppingApplication.Utils.Password;
@@ -21,11 +22,13 @@ namespace Shopping.ShoppingAPI.Controllers
         private readonly IDistributedCache _distributedCache;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserControllers(IUserService userService, IMapper mapper,IDistributedCache distributedCache)
+        private readonly ILogger<UserControllers> _logger;
+        public UserControllers(IUserService userService, IMapper mapper,IDistributedCache distributedCache, ILogger<UserControllers> logger)
         {
             _userService = userService;
             _mapper = mapper;
             _distributedCache = distributedCache;
+            _logger = logger;
         }
 
         #region Get
@@ -458,7 +461,7 @@ namespace Shopping.ShoppingAPI.Controllers
                 , Convert.FromBase64String(password.IV)))
             {
                 //先从redis中获取token
-                var RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail);
+                var RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
                 await Console.Out.WriteLineAsync(RedisValueJson);
                 //判断是否存在token
                 if (string.IsNullOrEmpty(RedisValueJson))
@@ -471,10 +474,11 @@ namespace Shopping.ShoppingAPI.Controllers
                         await _userService.UpdateUserAsync(entity);
                     }
                     Random random = new Random();
-                    await _distributedCache.SetStringAsync(userLoginDto.UserEmail, entity.Token
+                    await _distributedCache.SetStringAsync(userLoginDto.UserEmail + "token", entity.Token
                         ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(random.NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
-                    RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail);
+                    RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
                 }
+                _logger.LogInformation(userLoginDto.UserEmail + "登录");
                 return new MessageModel<string>
                 {
                     Status = 200,
