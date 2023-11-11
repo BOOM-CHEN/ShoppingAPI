@@ -39,17 +39,23 @@ namespace Shopping.ShoppingAPI.Controllers
         [HttpGet("GetLimitUser")]
         public async Task<MessageModel<List<UserInfoDto>>> GetLimiteUser(int skip, int take)
         {
-            var entity = await _userService.GetLimitUserAsync(skip, take);
-            List<UserInfoDto> user = new();
-            foreach (var item in entity)
+            var users = await _distributedCache.GetStringAsync("GetLimitUser" + skip + take);
+            if (users == null)
             {
-                user.Add(_mapper.Map<UserInfoDto>(item));
+                var entity = await _userService.GetLimitUserAsync(skip, take);
+                List<UserInfoDto> user = new();
+                foreach (var item in entity)
+                {
+                    user.Add(_mapper.Map<UserInfoDto>(item));
+                }
+                await _distributedCache.SetStringAsync("GetLimitUser" + skip + take,JsonConvert.SerializeObject(user),new DistributedCacheEntryOptions() { AbsoluteExpiration = DateTimeOffset.Now.AddDays(1),SlidingExpiration = TimeSpan.FromHours(new Random().NextDouble()*24)});
+                users = await _distributedCache.GetStringAsync("GetLimitUser" + skip + take);
             }
             return new MessageModel<List<UserInfoDto>>()
             {
                 Status = 200,
                 Success = true,
-                Data = user
+                Data = JsonConvert.DeserializeObject<List<UserInfoDto>>(users)
             };
         }
         [Authorize(Roles = ("root"))]
