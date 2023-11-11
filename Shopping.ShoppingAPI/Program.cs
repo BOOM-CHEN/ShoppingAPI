@@ -9,6 +9,9 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Shopping.ShoppingEntity.AutoMapper;
 using Shopping.ShoppingEntity.Entity;
+using Serilog;
+using Serilog.Events;
+
 
 namespace Shopping.ShoppingAPI
 {
@@ -23,6 +26,17 @@ namespace Shopping.ShoppingAPI
                 opt.SerializerSettings.ContractResolver = new DefaultContractResolver();//Swagger字段大小写
                 opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH-mm-ss";//时间格式
             });
+
+
+            #region SeriLog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+            builder.Host.UseSerilog();
+            #endregion
 
             #region Redis
             builder.Services.AddStackExchangeRedisCache(opt =>
@@ -99,8 +113,9 @@ namespace Shopping.ShoppingAPI
 
             app.UseCors("MyCors");
 
-            app.UseHttpsRedirection();
+            app.UseSerilogRequestLogging();
 
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
 
