@@ -2,6 +2,9 @@
 
 namespace Shopping.ShoppingAPI.Utils.SwaggerExt
 {
+    /// <summary>
+    /// swagger配置
+    /// </summary>
     public static class CustomSwaggerExt
     {
         public static void AddBuilderServicesExt(this IServiceCollection services)
