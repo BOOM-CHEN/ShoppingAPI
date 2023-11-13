@@ -42,7 +42,6 @@ namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
                     restrictedToMinimumLevel:LogEventLevel.Information
                 )
                 .CreateLogger();
-
         }
     }
 }

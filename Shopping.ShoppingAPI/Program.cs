@@ -38,7 +38,7 @@ namespace Shopping.ShoppingAPI
             //MongoDB连接
             builder.Services.Configure<MongoDBSetting>(builder.Configuration.GetSection("MongoDB"));
             // 创建并启动定时任务
-            new AutoCleanupLog(TimeSpan.FromSeconds(20), GetMongoDBCollection.GetCollection(builder)).Start();
+            new AutoCleanupLog(TimeSpan.FromHours(3), GetMongoDBCollection.GetCollection(builder)).Start();
             #endregion
 
             #region SeriLog
