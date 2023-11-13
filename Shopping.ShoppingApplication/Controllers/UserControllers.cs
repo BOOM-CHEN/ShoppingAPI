@@ -447,6 +447,7 @@ namespace Shopping.ShoppingAPI.Controllers
             var entity = await _userService.FindAsync(x => x.UserEmail == userLoginDto.UserEmail);
             if (entity == null)
             {
+                _logger.LogInformation(userLoginDto.UserEmail + $" is fail login on {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                 return new MessageModel<string>
                 {
                     Status = 200,
@@ -462,7 +463,6 @@ namespace Shopping.ShoppingAPI.Controllers
             {
                 //先从redis中获取token
                 var RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
-                await Console.Out.WriteLineAsync(RedisValueJson);
                 //判断是否存在token
                 if (string.IsNullOrEmpty(RedisValueJson))
                 {
@@ -478,7 +478,7 @@ namespace Shopping.ShoppingAPI.Controllers
                         ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(random.NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
                     RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
                 }
-                _logger.LogInformation(userLoginDto.UserEmail + "登录");
+                _logger.LogInformation(entity.Role+" "+userLoginDto.UserEmail + $" is success login on {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}" );
                 return new MessageModel<string>
                 {
                     Status = 200,
@@ -489,6 +489,7 @@ namespace Shopping.ShoppingAPI.Controllers
             }
             else
             {
+                _logger.LogInformation(userLoginDto.UserEmail + $" is fail login on {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
                 return new MessageModel<string>
                 {
                     Status = 200,

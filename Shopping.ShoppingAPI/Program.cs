@@ -11,12 +11,18 @@ using Shopping.ShoppingEntity.AutoMapper;
 using Shopping.ShoppingEntity.Entity;
 using Serilog;
 using Serilog.Events;
-
+using Shopping.ShoppingEntity.Models;
+using Autofac.Core;
+using MongoDB.Driver;
+using Shopping.ShoppingAPI.Utils.SerilogToMongoDB;
+using MongoDB.Bson;
 
 namespace Shopping.ShoppingAPI
 {
+
     public class Program
     {
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -24,18 +30,20 @@ namespace Shopping.ShoppingAPI
             builder.Services.AddControllers().AddNewtonsoftJson(opt =>
             {
                 opt.SerializerSettings.ContractResolver = new DefaultContractResolver();//Swagger字段大小写
-                opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH-mm-ss";//时间格式
+                opt.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";//时间格式
             });
 
 
+            #region MongoDB
+            //MongoDB连接
+            builder.Services.Configure<MongoDBSetting>(builder.Configuration.GetSection("MongoDB"));
+            // 创建并启动定时任务
+            new AutoCleanupLog(TimeSpan.FromSeconds(20), GetMongoDBCollection.GetCollection(builder)).Start();
+            #endregion
+
             #region SeriLog
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
             builder.Host.UseSerilog();
+            builder.Services.AddSerilogToMongoDBService();
             #endregion
 
             #region Redis
@@ -101,7 +109,7 @@ namespace Shopping.ShoppingAPI
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            //Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 #region SwaggerExt

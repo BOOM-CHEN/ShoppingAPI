@@ -10,8 +10,15 @@ using Shopping.ShoppingEntity.Repository.Base;
 
 namespace Shopping.ShoppingAPI.Utils.AutoFac
 {
+    /// <summary>
+    /// 自动注册
+    /// </summary>
     public class AutoFacModule : Autofac.Module
     {
+        /// <summary>
+        /// auto
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void Load(ContainerBuilder builder)
         {
             //Repository

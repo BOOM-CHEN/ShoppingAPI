@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Shopping.ShoppingApplication.IServices;
 using Shopping.ShoppingEntity.Dto.ProductDto;
 using Shopping.ShoppingEntity.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shopping.ShoppingApplication.Controllers
@@ -16,15 +19,21 @@ namespace Shopping.ShoppingApplication.Controllers
     [Route("api")]
     public class ProductControllers : ControllerBase
     {
+        private readonly IDistributedCache _distributedCache;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<ProductControllers> _logger;
         private readonly IMapper _mapper;
 
-        public ProductControllers(IProductService productService, IMapper mapper, ICategoryService categoryService)
+        public ProductControllers(IProductService productService, IMapper mapper,
+            ICategoryService categoryService,IDistributedCache distributedCache,
+            ILogger<ProductControllers> logger)
         {
             _productService = productService;
             _mapper = mapper;
             _categoryService = categoryService;
+            _distributedCache = distributedCache;
+            _logger = logger;
         }
 
         [HttpPost("InsertProduct")]
@@ -149,12 +158,20 @@ namespace Shopping.ShoppingApplication.Controllers
         [HttpGet("GetAllProduct")]
         public async Task<MessageModel<List<Product>>> GetAllProduct()
         {
-            var entity = await _productService.GetAllProductAsync();
+            var ProductsCache =await _distributedCache.GetStringAsync("AllProduct");
+            if (ProductsCache == null)
+            {
+                var entity = await _productService.GetAllProductAsync();
+                await _distributedCache.SetStringAsync("AllProduct", JsonConvert.SerializeObject(entity),
+                    new DistributedCacheEntryOptions() { AbsoluteExpiration = DateTimeOffset.Now.AddDays(1), SlidingExpiration = TimeSpan.FromHours(new Random().NextDouble() * 24) });
+                ProductsCache = await _distributedCache.GetStringAsync("AllProduct");
+            }
+
             return new MessageModel<List<Product>>()
             {
                 Status = 200,
                 Success = true,
-                Data = entity
+                Data = JsonConvert.DeserializeObject<List<Product>>(ProductsCache)
             };
         }
 
