@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 
@@ -35,30 +36,31 @@ namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
 
         private void CleanupLogs(object state)
         {
-            var test = _mongoCollection.Find(_ => true).ToEnumerable();//获取集合中所有数据
+            DateTime ExpireTime;
+            int deletedCount = 0;
             /*if (!test.Any())
             {
                 Console.WriteLine("日志为空,停止监听");
                 Stop();
                 return;
             }*/
-            int count = 0;
-            foreach (var item in test)
+
+            var res = _mongoCollection.Find(_ => true).ToEnumerable();
+            foreach (var item in res)
             {
-                //时区 +8(+28800) 清除存储时间大于6小时的日志
-                if ((DateTime.Now - (DateTime)item["Timestamp"]).TotalSeconds - 28800 > 21600)
-                //if ((DateTime.Now - (DateTime)item["Timestamp"]).TotalSeconds - 28800 > 86400)
+                ExpireTime = DateTime.ParseExact(item["ExpireTime"].ToString(), "yyyy-MM-dd HH:mm:ss", null);
+                if ((ExpireTime - DateTime.Now).TotalSeconds <= 0)
                 {
-                    _mongoCollection.DeleteMany(item);
-                    count++;
-                    
+                    _mongoCollection.DeleteOne(item);
+                    deletedCount++;
                 }
             }
-            if(count > 0)
+            if(deletedCount > 0)
             {
-                Console.WriteLine("已清理"+count+"条过期日志");
+                Console.WriteLine($"{deletedCount}条日志已过期");
             }
-            Console.WriteLine(DateTime.Now + " 第" + ++listenCount +"次监听");
+            
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " 第" + ++listenCount +"次监听");
         }
 
         /// <summary>

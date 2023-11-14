@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MongoDB;
 using Shopping.ShoppingEntity.Models;
+using System.Globalization;
 
 namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
 {
@@ -39,7 +41,10 @@ namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
                 .WriteTo.MongoDB(
                     MongoDBDataBase,
                     collectionName: MongoDBConnection.CollectionName,
-                    restrictedToMinimumLevel:LogEventLevel.Information
+                    restrictedToMinimumLevel:LogEventLevel.Information,
+                    period:TimeSpan.FromSeconds(1),//批量写入的时间
+                    batchPostingLimit:10,//每次批量写入的数量
+                    mongoDBJsonFormatter:new CustomFormatProvider()
                 )
                 .CreateLogger();
         }

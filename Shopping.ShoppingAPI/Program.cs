@@ -16,6 +16,8 @@ using Autofac.Core;
 using MongoDB.Driver;
 using Shopping.ShoppingAPI.Utils.SerilogToMongoDB;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Shopping.ShoppingAPI
 {
@@ -37,6 +39,10 @@ namespace Shopping.ShoppingAPI
             #region MongoDB
             //MongoDB连接
             builder.Services.Configure<MongoDBSetting>(builder.Configuration.GetSection("MongoDB"));
+
+            //映射
+            
+
             // 创建并启动定时任务
             new AutoCleanupLog(TimeSpan.FromHours(3), GetMongoDBCollection.GetCollection(builder)).Start();
             #endregion

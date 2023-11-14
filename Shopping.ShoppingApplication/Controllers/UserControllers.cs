@@ -478,7 +478,6 @@ namespace Shopping.ShoppingAPI.Controllers
                         ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(random.NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
                     RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
                 }
-                _logger.LogInformation(entity.Role+" "+userLoginDto.UserEmail + $" is success login on {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}" );
                 return new MessageModel<string>
                 {
                     Status = 200,
