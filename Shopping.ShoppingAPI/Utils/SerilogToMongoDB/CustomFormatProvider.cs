@@ -19,9 +19,9 @@ namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
                 ExpireTime = logEvent.Timestamp.DateTime.AddHours(new Random().NextDouble()*6).ToString("yyyy-MM-dd HH:mm:ss"),
                 CreateTime = logEvent.Timestamp.DateTime.ToString("yyyy-MM-dd HH:mm:ss"),
                 EventLevel = logEvent.Level.ToString(),
-                RequestMethod = logEvent.Properties["RequestMethod"].ToString(),
-                RequestPath = logEvent.Properties["RequestPath"].ToString(),
-                StatusCode = logEvent.Properties["StatusCode"].ToString()
+                RequestMethod = logEvent.Properties.TryGetValue("RequestMethod",out var requestMethod).ToString(),
+                RequestPath = logEvent.Properties.TryGetValue("RequestPath",out var RequestPath).ToString(),
+                StatusCode = logEvent.Properties.TryGetValue("StatusCode",out var StatusCode).ToString()
             };
             output.Write(JsonConvert.SerializeObject(log));
         }

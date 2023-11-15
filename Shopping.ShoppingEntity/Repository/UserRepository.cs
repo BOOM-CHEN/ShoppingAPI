@@ -78,7 +78,7 @@ namespace Shopping.ShoppingEntity.Repository
         }
         public async Task<List<User>> GetLimitUserAsync(int skip,int take)
         {
-            return await _shoppingDbContext.Set<User>().Skip(skip).Take(take).ToListAsync();
+            return await _shoppingDbContext.Set<User>().OrderBy(x=>x.RegisterTime).Skip(skip).Take(take).ToListAsync();
         }
         public async Task<List<User>> GetLimitUserAsync(Expression<Func<User,bool>> exp,int skip,int take)
         {

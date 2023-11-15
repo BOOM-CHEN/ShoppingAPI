@@ -183,9 +183,51 @@ namespace Shopping.ShoppingAPI.Controllers
         }//获取所有用户不分页
 
         [HttpPost("GetUserById")]
-        public async Task<User> GetUserById(Guid id)
+        public async Task<MessageModel<User>> GetUserById(Guid id)
         {
-            return await _userService.GetUserByIdAsync(id);
+            var cacheUser = await _distributedCache.GetStringAsync("UserId"+id);
+            if (cacheUser == null)
+            {
+                User user = await _userService.GetUserByIdAsync(id);
+                if (user == null)
+                {
+                    //防止缓存穿透
+                    await _distributedCache.SetStringAsync("UserId" + id,
+                        "UserId" + id,
+                        new DistributedCacheEntryOptions() { 
+                            AbsoluteExpiration = DateTime.Now.AddHours(1),
+                            SlidingExpiration = TimeSpan.FromMinutes(10)
+                        });
+                    cacheUser = await _distributedCache.GetStringAsync("UserId" + id);
+                }
+                else
+                {
+                    await _distributedCache.SetStringAsync("UserId" + id,
+                        JsonConvert.SerializeObject(user),
+                        new DistributedCacheEntryOptions()
+                        {
+                            AbsoluteExpiration = DateTime.Now.AddHours(1),
+                            SlidingExpiration = TimeSpan.FromMinutes(10)
+                        });
+                    cacheUser = await _distributedCache.GetStringAsync("UserId" + id);
+                }
+            }
+            if (cacheUser == "UserId" + id)
+            {
+                return new MessageModel<User>()
+                {
+                    Status = 400,
+                    Success = false,
+                    Message = "未找到该用户",
+                };
+            }
+            return new MessageModel<User>()
+            {
+                Status = 200,
+                Success = true,
+                Message = "查询成功",
+                Data = JsonConvert.DeserializeObject<User>(cacheUser)
+            };
         }
 
         [HttpGet("GetUserByEmail")]
@@ -473,9 +515,8 @@ namespace Shopping.ShoppingAPI.Controllers
                         entity.Token = JwtHelper.CreateJwt(entity.Role, entity.UserName, entity.UserEmail);
                         await _userService.UpdateUserAsync(entity);
                     }
-                    Random random = new Random();
                     await _distributedCache.SetStringAsync(userLoginDto.UserEmail + "token", entity.Token
-                        ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(random.NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
+                        ,new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromHours(new Random().NextDouble()*24)).SetAbsoluteExpiration(DateTimeOffset.Now.AddDays(1)));
                     RedisValueJson = await _distributedCache.GetStringAsync(userLoginDto.UserEmail + "token");
                 }
                 return new MessageModel<string>
