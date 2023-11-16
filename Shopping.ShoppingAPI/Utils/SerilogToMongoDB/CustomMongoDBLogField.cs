@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Serilog.Events;
 
 namespace Shopping.ShoppingAPI.Utils.SerilogToMongoDB
 {
